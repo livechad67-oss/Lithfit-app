@@ -1,0 +1,398 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user account profile for LITHFIT.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "avatarStyle": { "type": "string" },
+        "avatarConfig": { "type": "object" },
+        "hasPersonalPhoto": { "type": "boolean" },
+        "guideCompleted": { "type": "boolean" },
+        "privateProfile": { "type": "boolean" },
+        "minorAccount": { "type": "boolean" },
+        "preferredStyles": { "type": "array" },
+        "preferredColors": { "type": "array" },
+        "avoidColors": { "type": "array" },
+        "preferredCategories": { "type": "array" },
+        "preferredWeatherStyles": { "type": "array" },
+        "preferredOccasions": { "type": "array" },
+        "preferredFootwear": { "type": "array" },
+        "preferredAccessories": { "type": "array" },
+        "budgetPreference": { "type": "string" },
+        "inspirationFocus": { "type": "string" },
+        "preferredCurrency": { "type": "string" },
+        "preferredRegion": { "type": "string" },
+        "locationLabel": { "type": "string" },
+        "themeMode": { "type": "string", "enum": ["SYSTEM", "LIGHT", "DARK"] },
+        "notificationsEnabled": { "type": "boolean" },
+        "locationAccessPreference": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "username", "preferredStyles", "preferredColors", "preferredCategories", "preferredCurrency", "themeMode", "privateProfile", "minorAccount", "notificationsEnabled", "locationAccessPreference", "createdAt", "updatedAt"]
+    },
+    "UserPreference": {
+      "title": "UserPreference",
+      "description": "Dedicated user style and privacy preferences document.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "preferredStyles": { "type": "array" },
+        "preferredColors": { "type": "array" },
+        "avoidColors": { "type": "array" },
+        "preferredCategories": { "type": "array" },
+        "preferredWeatherStyles": { "type": "array" },
+        "preferredOccasions": { "type": "array" },
+        "preferredFootwear": { "type": "array" },
+        "preferredAccessories": { "type": "array" },
+        "budgetPreference": { "type": "string" },
+        "inspirationFocus": { "type": "string" },
+        "preferredCurrency": { "type": "string" },
+        "preferredRegion": { "type": "string" },
+        "locationLabel": { "type": "string" },
+        "themeMode": { "type": "string", "enum": ["SYSTEM", "LIGHT", "DARK"] },
+        "privateProfile": { "type": "boolean" },
+        "minorAccount": { "type": "boolean" },
+        "notificationsEnabled": { "type": "boolean" },
+        "locationAccessPreference": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "preferredStyles", "preferredColors", "preferredCategories", "preferredCurrency", "themeMode", "privateProfile", "minorAccount", "notificationsEnabled", "locationAccessPreference", "createdAt", "updatedAt"]
+    },
+    "LegalAcceptance": {
+      "title": "LegalAcceptance",
+      "description": "Timestamped user consent record for Privacy Policy, Terms, and Community Guidelines.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "privacyPolicyVersion": { "type": "string" },
+        "termsVersion": { "type": "string" },
+        "communityGuidelinesVersion": { "type": "string" },
+        "cameraConsent": { "type": "boolean" },
+        "photoConsent": { "type": "boolean" },
+        "locationConsent": { "type": "boolean" },
+        "notificationsConsent": { "type": "boolean" },
+        "acceptedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "privacyPolicyVersion", "termsVersion", "communityGuidelinesVersion", "cameraConsent", "photoConsent", "locationConsent", "notificationsConsent", "acceptedAt"]
+    },
+    "Wardrobe": {
+      "title": "Wardrobe",
+      "description": "Named wardrobe container owned by a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "createdAt", "updatedAt"]
+    },
+    "WardrobeItem": {
+      "title": "WardrobeItem",
+      "description": "Individual garment or accessory in a user's private wardrobe.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "wardrobeId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["TOPS", "TROUSERS", "JEANS", "JACKETS", "HOODIES", "SHOES", "ACCESSORIES", "DRESSES", "SKIRTS", "OTHER"] },
+        "subType": { "type": "string" },
+        "color": { "type": "string" },
+        "pattern": { "type": "string" },
+        "material": { "type": "string" },
+        "texture": { "type": "string" },
+        "finish": { "type": "string" },
+        "style": { "type": "string" },
+        "garmentType": { "type": "string" },
+        "brand": { "type": "string" },
+        "notes": { "type": "string" },
+        "imagePath": { "type": "string" },
+        "thumbnailBase64": { "type": "string" },
+        "favorite": { "type": "boolean" },
+        "privateItem": { "type": "boolean" },
+        "collectionTags": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "wardrobeId", "name", "category", "color", "favorite", "privateItem", "collectionTags", "createdAt", "updatedAt"]
+    },
+    "OutfitCollection": {
+      "title": "OutfitCollection",
+      "description": "User-curated collection for grouping saved outfits.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "createdAt", "updatedAt"]
+    },
+    "Outfit": {
+      "title": "Outfit",
+      "description": "Interactive assembled outfit composed of wardrobe pieces.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "notes": { "type": "string" },
+        "collectionId": { "type": "string" },
+        "topItemId": { "type": "string" },
+        "bottomItemId": { "type": "string" },
+        "shoesItemId": { "type": "string" },
+        "jacketItemId": { "type": "string" },
+        "accessoryIds": { "type": "array" },
+        "itemNames": { "type": "array" },
+        "colorPalette": { "type": "array" },
+        "itemColorOverrides": { "type": "object" },
+        "feedbackStatus": { "type": "string", "enum": ["LIKED", "DISLIKED"] },
+        "previewPath": { "type": "string" },
+        "favorite": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "occasion", "vibe", "accessoryIds", "itemNames", "colorPalette", "favorite", "createdAt", "updatedAt"]
+    },
+    "AiConversation": {
+      "title": "AiConversation",
+      "description": "LITHFIT AI personal styling conversation thread.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "lastMessagePreview": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "createdAt", "updatedAt"]
+    },
+    "AiMessage": {
+      "title": "AiMessage",
+      "description": "Individual message inside a LITHFIT AI styling conversation.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "role": { "type": "string", "enum": ["USER", "ASSISTANT"] },
+        "text": { "type": "string" },
+        "recommendedItemNames": { "type": "array" },
+        "stylingReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "role", "text", "recommendedItemNames", "createdAt"]
+    },
+    "GeneratedPreview": {
+      "title": "GeneratedPreview",
+      "description": "AI-generated outfit visual illustration preview saved by the user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "outfitId": { "type": "string" },
+        "promptSummary": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "localImagePath": { "type": "string" },
+        "thumbnailBase64": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "promptSummary", "occasion", "vibe", "createdAt"]
+    },
+    "SavedItem": {
+      "title": "SavedItem",
+      "description": "Bookmarked or liked discovery post, product, outfit, or preview.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "targetType": { "type": "string", "enum": ["DISCOVERY_POST", "PRODUCT", "OUTFIT", "PREVIEW"] },
+        "targetId": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "category": { "type": "string" },
+        "collectionName": { "type": "string" },
+        "liked": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "targetType", "targetId", "title", "category", "liked", "createdAt"]
+    },
+    "DiscoveryPost": {
+      "title": "DiscoveryPost",
+      "description": "Published editorial or community fashion lookbook entry.",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "targetAudience": { "type": "string", "enum": ["HIM", "HER", "UNISEX"] },
+        "sectionTag": { "type": "string" },
+        "sourceType": { "type": "string", "enum": ["EDITORIAL", "COMMUNITY", "AI_CONCEPT", "PARTNER_COLLECTION"] },
+        "imageResKey": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "tags": { "type": "array" },
+        "colorPalette": { "type": "array" },
+        "outfitBreakdown": { "type": "array" },
+        "published": { "type": "boolean" },
+        "likesCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "title", "description", "category", "sourceType", "published", "likesCount", "createdAt", "updatedAt"]
+    },
+    "Seller": {
+      "title": "Seller",
+      "description": "Participating fashion retailer profile.",
+      "type": "object",
+      "properties": {
+        "ownerUserId": { "type": "string" },
+        "brandName": { "type": "string" },
+        "description": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUserId", "brandName", "active", "createdAt"]
+    },
+    "Store": {
+      "title": "Store",
+      "description": "Physical participating retail store location.",
+      "type": "object",
+      "properties": {
+        "ownerUserId": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "contactPhone": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUserId", "sellerId", "name", "category", "address", "city", "latitude", "longitude", "active", "createdAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Real catalogue product listing from a participating retailer.",
+      "type": "object",
+      "properties": {
+        "sellerOwnerId": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "sellerName": { "type": "string" },
+        "storeId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "color": { "type": "string" },
+        "style": { "type": "string" },
+        "occasion": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string" },
+        "sizes": { "type": "array" },
+        "description": { "type": "string" },
+        "availabilityStatus": { "type": "string", "enum": ["IN_STOCK", "LIMITED", "OUT_OF_STOCK", "UNCONFIRMED"] },
+        "productUrl": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "imageResKey": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sellerOwnerId", "sellerId", "sellerName", "name", "category", "color", "style", "price", "currency", "sizes", "availabilityStatus", "active", "createdAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Content safety, moderation, or copyright complaint submission.",
+      "type": "object",
+      "properties": {
+        "reporterId": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["SUBMITTED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reporterId", "targetType", "targetId", "reason", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user account profile owned by userId."
+    },
+    "/userPreferences/{userId}": {
+      "schema": { "$ref": "#/entities/UserPreference" },
+      "description": "Dedicated user fashion and privacy preferences."
+    },
+    "/users/{userId}/legalAcceptances/{acceptanceId}": {
+      "schema": { "$ref": "#/entities/LegalAcceptance" },
+      "description": "User legal policy acceptance records."
+    },
+    "/users/{userId}/wardrobes/{wardrobeId}": {
+      "schema": { "$ref": "#/entities/Wardrobe" },
+      "description": "User wardrobes."
+    },
+    "/users/{userId}/wardrobeItems/{itemId}": {
+      "schema": { "$ref": "#/entities/WardrobeItem" },
+      "description": "Private garments and accessories inside user's wardrobe."
+    },
+    "/users/{userId}/outfitCollections/{collectionId}": {
+      "schema": { "$ref": "#/entities/OutfitCollection" },
+      "description": "Custom collections for organizing saved outfits."
+    },
+    "/users/{userId}/outfits/{outfitId}": {
+      "schema": { "$ref": "#/entities/Outfit" },
+      "description": "Assembled outfits created by the user."
+    },
+    "/users/{userId}/aiConversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/AiConversation" },
+      "description": "LITHFIT AI stylist conversation sessions."
+    },
+    "/users/{userId}/aiConversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/AiMessage" },
+      "description": "Messages in a LITHFIT AI stylist conversation."
+    },
+    "/users/{userId}/generatedPreviews/{previewId}": {
+      "schema": { "$ref": "#/entities/GeneratedPreview" },
+      "description": "Saved AI-generated outfit visual previews."
+    },
+    "/users/{userId}/savedItems/{savedId}": {
+      "schema": { "$ref": "#/entities/SavedItem" },
+      "description": "User saved discovery posts, products, outfits, and previews."
+    },
+    "/discoveryPosts/{postId}": {
+      "schema": { "$ref": "#/entities/DiscoveryPost" },
+      "description": "Published editorial and community fashion discovery feed."
+    },
+    "/sellers/{sellerId}": {
+      "schema": { "$ref": "#/entities/Seller" },
+      "description": "Participating fashion retailers."
+    },
+    "/stores/{storeId}": {
+      "schema": { "$ref": "#/entities/Store" },
+      "description": "Physical store locations for participating retailers."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Participating retailer product catalogue."
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "Moderation and copyright reports submitted by users."
+    }
+  }
+}

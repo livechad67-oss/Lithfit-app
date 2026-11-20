@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <files-path name="wardrobe_photos" path="wardrobe/" />
+    <files-path name="preview_photos" path="previews/" />
+    <cache-path name="camera_cache" path="camera/" />
+</paths>
