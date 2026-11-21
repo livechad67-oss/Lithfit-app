@@ -1,0 +1,463 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private user account profile and complete preferences for LITHFIT.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string" },
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "profilePhotoPath": { "type": "string" },
+        "profilePhotoPrivate": { "type": "boolean" },
+        "avatarStyle": { "type": "string" },
+        "avatarConfig": { "type": "object" },
+        "hasPersonalPhoto": { "type": "boolean" },
+        "guideCompleted": { "type": "boolean" },
+        "privateProfile": { "type": "boolean" },
+        "minorAccount": { "type": "boolean" },
+        "preferredStyles": { "type": "array" },
+        "personalStyleTags": { "type": "array" },
+        "preferredColors": { "type": "array" },
+        "frequentColors": { "type": "array" },
+        "neutralCombos": { "type": "array" },
+        "experimentColors": { "type": "array" },
+        "avoidColors": { "type": "array" },
+        "preferredCategories": { "type": "array" },
+        "preferredSilhouettes": { "type": "array" },
+        "enjoyedCategories": { "type": "array" },
+        "rarelyWornCategories": { "type": "array" },
+        "preferredWeatherStyles": { "type": "array" },
+        "preferredOccasions": { "type": "array" },
+        "preferredFootwear": { "type": "array" },
+        "preferredAccessories": { "type": "array" },
+        "lifestyleTags": { "type": "array" },
+        "budgetPreference": { "type": "string" },
+        "inspirationFocus": { "type": "string" },
+        "preferredCurrency": { "type": "string" },
+        "preferredRegion": { "type": "string" },
+        "locationLabel": { "type": "string" },
+        "themeMode": { "type": "string", "enum": ["SYSTEM", "LIGHT", "DARK"] },
+        "language": { "type": "string" },
+        "reducedMotion": { "type": "boolean" },
+        "largeReadableText": { "type": "boolean" },
+        "notificationsEnabled": { "type": "boolean" },
+        "notifOutfitRecs": { "type": "boolean" },
+        "notifDailyReminders": { "type": "boolean" },
+        "notifWardrobeReminders": { "type": "boolean" },
+        "notifSecurityAlerts": { "type": "boolean" },
+        "notifAppUpdates": { "type": "boolean" },
+        "notifProductUpdates": { "type": "boolean" },
+        "locationAccessPreference": { "type": "boolean" },
+        "gender": { "type": "string" },
+        "age": { "type": "string" },
+        "height": { "type": "string" },
+        "bodySize": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "username", "preferredStyles", "preferredColors", "preferredCategories", "preferredCurrency", "themeMode", "privateProfile", "minorAccount", "notificationsEnabled", "locationAccessPreference", "createdAt", "updatedAt"]
+    },
+    "UserPreference": {
+      "title": "UserPreference",
+      "description": "Dedicated user style and accessibility preferences document.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "preferredStyles": { "type": "array" },
+        "preferredColors": { "type": "array" },
+        "avoidColors": { "type": "array" },
+        "preferredCategories": { "type": "array" },
+        "preferredWeatherStyles": { "type": "array" },
+        "preferredOccasions": { "type": "array" },
+        "preferredFootwear": { "type": "array" },
+        "preferredAccessories": { "type": "array" },
+        "budgetPreference": { "type": "string" },
+        "inspirationFocus": { "type": "string" },
+        "preferredCurrency": { "type": "string" },
+        "preferredRegion": { "type": "string" },
+        "locationLabel": { "type": "string" },
+        "themeMode": { "type": "string", "enum": ["SYSTEM", "LIGHT", "DARK"] },
+        "language": { "type": "string" },
+        "reducedMotion": { "type": "boolean" },
+        "largeReadableText": { "type": "boolean" },
+        "privateProfile": { "type": "boolean" },
+        "minorAccount": { "type": "boolean" },
+        "notificationsEnabled": { "type": "boolean" },
+        "locationAccessPreference": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "preferredStyles", "preferredColors", "preferredCategories", "preferredCurrency", "themeMode", "privateProfile", "minorAccount", "notificationsEnabled", "locationAccessPreference", "createdAt", "updatedAt"]
+    },
+    "LegalAcceptance": {
+      "title": "LegalAcceptance",
+      "description": "Timestamped user consent record for Privacy Policy, Terms, and Community Guidelines.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "privacyPolicyVersion": { "type": "string" },
+        "termsVersion": { "type": "string" },
+        "communityGuidelinesVersion": { "type": "string" },
+        "cameraConsent": { "type": "boolean" },
+        "photoConsent": { "type": "boolean" },
+        "locationConsent": { "type": "boolean" },
+        "notificationsConsent": { "type": "boolean" },
+        "acceptedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "privacyPolicyVersion", "termsVersion", "communityGuidelinesVersion", "cameraConsent", "photoConsent", "locationConsent", "notificationsConsent", "acceptedAt"]
+    },
+    "Wardrobe": {
+      "title": "Wardrobe",
+      "description": "Named wardrobe container owned by a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "createdAt", "updatedAt"]
+    },
+    "WardrobeItem": {
+      "title": "WardrobeItem",
+      "description": "Individual garment or accessory in a user's private wardrobe.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "wardrobeId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["TOPS", "TROUSERS", "JEANS", "JACKETS", "HOODIES", "SHOES", "ACCESSORIES", "DRESSES", "SKIRTS", "OTHER"] },
+        "subType": { "type": "string" },
+        "color": { "type": "string" },
+        "pattern": { "type": "string" },
+        "material": { "type": "string" },
+        "texture": { "type": "string" },
+        "finish": { "type": "string" },
+        "style": { "type": "string" },
+        "garmentType": { "type": "string" },
+        "brand": { "type": "string" },
+        "notes": { "type": "string" },
+        "imagePath": { "type": "string" },
+        "thumbnailBase64": { "type": "string" },
+        "favorite": { "type": "boolean" },
+        "privateItem": { "type": "boolean" },
+        "collectionTags": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "wardrobeId", "name", "category", "color", "favorite", "privateItem", "collectionTags", "createdAt", "updatedAt"]
+    },
+    "OutfitCollection": {
+      "title": "OutfitCollection",
+      "description": "User-curated collection for grouping saved outfits.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "createdAt", "updatedAt"]
+    },
+    "Outfit": {
+      "title": "Outfit",
+      "description": "Interactive assembled outfit composed of wardrobe pieces.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "notes": { "type": "string" },
+        "collectionId": { "type": "string" },
+        "topItemId": { "type": "string" },
+        "bottomItemId": { "type": "string" },
+        "shoesItemId": { "type": "string" },
+        "jacketItemId": { "type": "string" },
+        "accessoryIds": { "type": "array" },
+        "itemNames": { "type": "array" },
+        "colorPalette": { "type": "array" },
+        "itemColorOverrides": { "type": "object" },
+        "feedbackStatus": { "type": "string", "enum": ["LIKED", "DISLIKED"] },
+        "previewPath": { "type": "string" },
+        "favorite": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "occasion", "vibe", "accessoryIds", "itemNames", "colorPalette", "favorite", "createdAt", "updatedAt"]
+    },
+    "CalendarOutfitEntry": {
+      "title": "CalendarOutfitEntry",
+      "description": "Scheduled outfit planned on the user's personal calendar.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "dateKey": { "type": "string" },
+        "outfitId": { "type": "string" },
+        "outfitName": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "notes": { "type": "string" },
+        "worn": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "dateKey", "outfitId", "outfitName", "occasion", "vibe", "worn", "updatedAt"]
+    },
+    "OutfitWearHistory": {
+      "title": "OutfitWearHistory",
+      "description": "Recorded wear history entry for real wardrobe utilization insights.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "outfitId": { "type": "string" },
+        "outfitName": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "itemIds": { "type": "array" },
+        "itemNames": { "type": "array" },
+        "wornDateKey": { "type": "string" },
+        "notes": { "type": "string" },
+        "wornAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "outfitId", "outfitName", "occasion", "vibe", "itemIds", "itemNames", "wornDateKey", "wornAt"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "In-app notification alert respecting user notification toggles.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "category": { "type": "string", "enum": ["OUTFIT_REC", "DAILY_REMINDER", "WARDROBE", "SECURITY", "APP_UPDATE", "PRODUCT"] },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "category", "title", "body", "read", "createdAt"]
+    },
+    "OwnerRegistrationNotification": {
+      "title": "OwnerRegistrationNotification",
+      "description": "Owner-only notification generated when a new member registers on LITHFIT.",
+      "type": "object",
+      "properties": {
+        "newUserId": { "type": "string" },
+        "username": { "type": "string" },
+        "displayName": { "type": "string" },
+        "authMethod": { "type": "string", "enum": ["LOCAL", "GOOGLE", "EMAIL", "PHONE"] },
+        "recipientOwnerEmail": { "type": "string" },
+        "message": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["newUserId", "username", "displayName", "authMethod", "recipientOwnerEmail", "message", "read", "createdAt"]
+    },
+    "AiConversation": {
+      "title": "AiConversation",
+      "description": "LITHFIT AI stylist conversation thread (fashion advice only).",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "occasion": { "type": "string" },
+        "vibe": { "type": "string" },
+        "lastMessagePreview": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "createdAt", "updatedAt"]
+    },
+    "AiMessage": {
+      "title": "AiMessage",
+      "description": "Individual message inside a LITHFIT AI stylist conversation.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "role": { "type": "string", "enum": ["USER", "ASSISTANT"] },
+        "text": { "type": "string" },
+        "recommendedItemNames": { "type": "array" },
+        "stylingReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "role", "text", "recommendedItemNames", "createdAt"]
+    },
+    "SavedItem": {
+      "title": "SavedItem",
+      "description": "Bookmarked or liked discovery post, product, or outfit.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "targetType": { "type": "string", "enum": ["DISCOVERY_POST", "PRODUCT", "OUTFIT", "PREVIEW"] },
+        "targetId": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "category": { "type": "string" },
+        "collectionName": { "type": "string" },
+        "liked": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "targetType", "targetId", "title", "category", "liked", "createdAt"]
+    },
+    "DiscoveryPost": {
+      "title": "DiscoveryPost",
+      "description": "Published editorial or community fashion lookbook entry.",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "targetAudience": { "type": "string", "enum": ["HIM", "HER", "UNISEX"] },
+        "sectionTag": { "type": "string" },
+        "sourceType": { "type": "string", "enum": ["EDITORIAL", "COMMUNITY", "PARTNER_COLLECTION"] },
+        "imageResKey": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "tags": { "type": "array" },
+        "colorPalette": { "type": "array" },
+        "outfitBreakdown": { "type": "array" },
+        "published": { "type": "boolean" },
+        "likesCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["authorId", "authorName", "title", "description", "category", "sourceType", "published", "likesCount", "createdAt", "updatedAt"]
+    },
+    "Seller": {
+      "title": "Seller",
+      "description": "Participating fashion retailer profile.",
+      "type": "object",
+      "properties": {
+        "ownerUserId": { "type": "string" },
+        "brandName": { "type": "string" },
+        "description": { "type": "string" },
+        "websiteUrl": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUserId", "brandName", "active", "createdAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Real catalogue product listing from a participating retailer on Style Radar.",
+      "type": "object",
+      "properties": {
+        "sellerOwnerId": { "type": "string" },
+        "sellerId": { "type": "string" },
+        "sellerName": { "type": "string" },
+        "storeId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "color": { "type": "string" },
+        "style": { "type": "string" },
+        "occasion": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string" },
+        "sizes": { "type": "array" },
+        "description": { "type": "string" },
+        "availabilityStatus": { "type": "string", "enum": ["IN_STOCK", "LIMITED", "OUT_OF_STOCK", "UNCONFIRMED"] },
+        "productUrl": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "imageResKey": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sellerOwnerId", "sellerId", "sellerName", "name", "category", "color", "style", "price", "currency", "sizes", "availabilityStatus", "active", "createdAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Content safety, moderation, or copyright complaint submission.",
+      "type": "object",
+      "properties": {
+        "reporterId": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["SUBMITTED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reporterId", "targetType", "targetId", "reason", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user account profile owned by userId."
+    },
+    "/userPreferences/{userId}": {
+      "schema": { "$ref": "#/entities/UserPreference" },
+      "description": "Dedicated user fashion and accessibility preferences."
+    },
+    "/ownerNotifications/{notifId}": {
+      "schema": { "$ref": "#/entities/OwnerRegistrationNotification" },
+      "description": "Owner-only new registration notifications restricted to livechad67@gmail.com."
+    },
+    "/users/{userId}/legalAcceptances/{acceptanceId}": {
+      "schema": { "$ref": "#/entities/LegalAcceptance" },
+      "description": "User legal policy acceptance records."
+    },
+    "/users/{userId}/wardrobes/{wardrobeId}": {
+      "schema": { "$ref": "#/entities/Wardrobe" },
+      "description": "User wardrobes."
+    },
+    "/users/{userId}/wardrobeItems/{itemId}": {
+      "schema": { "$ref": "#/entities/WardrobeItem" },
+      "description": "Private garments and accessories inside user's wardrobe."
+    },
+    "/users/{userId}/outfitCollections/{collectionId}": {
+      "schema": { "$ref": "#/entities/OutfitCollection" },
+      "description": "Custom collections for organizing saved outfits."
+    },
+    "/users/{userId}/outfits/{outfitId}": {
+      "schema": { "$ref": "#/entities/Outfit" },
+      "description": "Assembled outfits created by the user."
+    },
+    "/users/{userId}/calendarEntries/{entryId}": {
+      "schema": { "$ref": "#/entities/CalendarOutfitEntry" },
+      "description": "Scheduled outfits on the user's outfit calendar."
+    },
+    "/users/{userId}/outfitHistory/{historyId}": {
+      "schema": { "$ref": "#/entities/OutfitWearHistory" },
+      "description": "Logged wear events for real wardrobe insights."
+    },
+    "/users/{userId}/notifications/{notifId}": {
+      "schema": { "$ref": "#/entities/AppNotification" },
+      "description": "User in-app notification inbox."
+    },
+    "/users/{userId}/aiConversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/AiConversation" },
+      "description": "LITHFIT AI stylist conversation sessions."
+    },
+    "/users/{userId}/aiConversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/AiMessage" },
+      "description": "Messages in a LITHFIT AI stylist conversation."
+    },
+    "/users/{userId}/savedItems/{savedId}": {
+      "schema": { "$ref": "#/entities/SavedItem" },
+      "description": "User saved discovery posts, products, and outfits."
+    },
+    "/discoveryPosts/{postId}": {
+      "schema": { "$ref": "#/entities/DiscoveryPost" },
+      "description": "Published editorial and community fashion discovery feed."
+    },
+    "/sellers/{sellerId}": {
+      "schema": { "$ref": "#/entities/Seller" },
+      "description": "Participating fashion retailers."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Participating retailer product catalogue."
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "Moderation and copyright reports submitted by users."
+    }
+  }
+}

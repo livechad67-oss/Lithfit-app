@@ -1,0 +1,6 @@
+{
+  "name": "LITHFIT",
+  "description": "AI-powered personal fashion styling, digital wardrobe, and local style discovery from CLASTAD.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

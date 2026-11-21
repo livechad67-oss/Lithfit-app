@@ -1,0 +1,669 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isClastadOwner() {
+      return isSignedIn() &&
+        request.auth.token.email == 'livechad67@gmail.com' &&
+        request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isBoundedStringList(list, maxItems) {
+      return list is list && list.size() <= maxItems && (list.size() == 0 || list[0] is string);
+    }
+
+    function isValidUserProfile(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 60 &&
+        data.username is string && data.username.size() >= 2 && data.username.size() <= 30 &&
+        data.privateProfile is bool &&
+        data.minorAccount is bool &&
+        data.preferredStyles is list && data.preferredStyles.size() <= 25 &&
+        data.preferredColors is list && data.preferredColors.size() <= 25 &&
+        data.preferredCategories is list && data.preferredCategories.size() <= 20 &&
+        data.preferredCurrency is string && data.preferredCurrency.size() in [1, 2, 3, 4, 5, 6, 7, 8] &&
+        data.themeMode in ['SYSTEM', 'LIGHT', 'DARK'] &&
+        data.notificationsEnabled is bool &&
+        data.locationAccessPreference is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('email' in data) || (data.email is string && data.email.size() <= 120)) &&
+        (!('phone' in data) || (data.phone is string && data.phone.size() <= 32)) &&
+        (!('avatarUrl' in data) || (data.avatarUrl is string && data.avatarUrl.size() <= 500)) &&
+        (!('profilePhotoPath' in data) || (data.profilePhotoPath is string && data.profilePhotoPath.size() <= 400)) &&
+        (!('gender' in data) || (data.gender is string && data.gender.size() <= 40)) &&
+        (!('age' in data) || (data.age is string && data.age.size() <= 30)) &&
+        (!('height' in data) || (data.height is string && data.height.size() <= 40)) &&
+        (!('bodySize' in data) || (data.bodySize is string && data.bodySize.size() <= 40)) &&
+        (!('budgetPreference' in data) || (data.budgetPreference is string && data.budgetPreference.size() <= 40)) &&
+        (!('inspirationFocus' in data) || (data.inspirationFocus is string && data.inspirationFocus.size() <= 20)) &&
+        (!('language' in data) || (data.language is string && data.language.size() <= 30)) &&
+        (!('avatarConfig' in data) || (data.avatarConfig is map && data.avatarConfig.size() <= 20)) &&
+        (!('personalStyleTags' in data) || (data.personalStyleTags is list && data.personalStyleTags.size() <= 20)) &&
+        (!('avoidColors' in data) || (data.avoidColors is list && data.avoidColors.size() <= 25)) &&
+        (!('preferredSilhouettes' in data) || (data.preferredSilhouettes is list && data.preferredSilhouettes.size() <= 15));
+    }
+
+    function isValidUserPreference(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        isBoundedStringList(data.preferredStyles, 25) &&
+        isBoundedStringList(data.preferredColors, 25) &&
+        isBoundedStringList(data.preferredCategories, 20) &&
+        data.preferredCurrency is string && data.preferredCurrency.size() >= 1 && data.preferredCurrency.size() <= 8 &&
+        data.themeMode in ['SYSTEM', 'LIGHT', 'DARK'] &&
+        data.privateProfile is bool &&
+        data.minorAccount is bool &&
+        data.notificationsEnabled is bool &&
+        data.locationAccessPreference is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('preferredRegion' in data) || (data.preferredRegion is string && data.preferredRegion.size() <= 60)) &&
+        (!('locationLabel' in data) || (data.locationLabel is string && data.locationLabel.size() <= 80)) &&
+        (!('avoidColors' in data) || isBoundedStringList(data.avoidColors, 25)) &&
+        (!('preferredWeatherStyles' in data) || isBoundedStringList(data.preferredWeatherStyles, 10)) &&
+        (!('preferredOccasions' in data) || isBoundedStringList(data.preferredOccasions, 15)) &&
+        (!('preferredFootwear' in data) || isBoundedStringList(data.preferredFootwear, 15)) &&
+        (!('preferredAccessories' in data) || isBoundedStringList(data.preferredAccessories, 15)) &&
+        (!('budgetPreference' in data) || (data.budgetPreference is string && data.budgetPreference.size() <= 40)) &&
+        (!('inspirationFocus' in data) || (data.inspirationFocus is string && data.inspirationFocus.size() <= 20)) &&
+        (!('language' in data) || (data.language is string && data.language.size() <= 30)) &&
+        (!('reducedMotion' in data) || data.reducedMotion is bool) &&
+        (!('largeReadableText' in data) || data.largeReadableText is bool);
+    }
+
+    function isValidLegalAcceptance(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.privacyPolicyVersion is string && data.privacyPolicyVersion.size() >= 1 && data.privacyPolicyVersion.size() <= 20 &&
+        data.termsVersion is string && data.termsVersion.size() >= 1 && data.termsVersion.size() <= 20 &&
+        data.communityGuidelinesVersion is string && data.communityGuidelinesVersion.size() >= 1 && data.communityGuidelinesVersion.size() <= 20 &&
+        data.cameraConsent is bool &&
+        data.photoConsent is bool &&
+        data.locationConsent is bool &&
+        data.notificationsConsent is bool &&
+        data.acceptedAt is timestamp && data.acceptedAt <= request.time;
+    }
+
+    function isValidWardrobe(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 60 &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 200));
+    }
+
+    function isValidWardrobeItem(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.wardrobeId is string && data.wardrobeId.size() >= 1 && data.wardrobeId.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 80 &&
+        data.category in ['TOPS', 'TROUSERS', 'JEANS', 'JACKETS', 'HOODIES', 'SHOES', 'ACCESSORIES', 'DRESSES', 'SKIRTS', 'OTHER'] &&
+        data.color is string && data.color.size() >= 1 && data.color.size() <= 40 &&
+        data.favorite is bool &&
+        data.privateItem is bool &&
+        isBoundedStringList(data.collectionTags, 10) &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('subType' in data) || (data.subType is string && data.subType.size() <= 50)) &&
+        (!('pattern' in data) || (data.pattern is string && data.pattern.size() <= 40)) &&
+        (!('material' in data) || (data.material is string && data.material.size() <= 40)) &&
+        (!('texture' in data) || (data.texture is string && data.texture.size() <= 40)) &&
+        (!('finish' in data) || (data.finish is string && data.finish.size() <= 40)) &&
+        (!('style' in data) || (data.style is string && data.style.size() <= 40)) &&
+        (!('garmentType' in data) || (data.garmentType is string && data.garmentType.size() <= 60)) &&
+        (!('brand' in data) || (data.brand is string && data.brand.size() <= 60)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 300)) &&
+        (!('imagePath' in data) || (data.imagePath is string && data.imagePath.size() <= 400)) &&
+        (!('thumbnailBase64' in data) || (data.thumbnailBase64 is string && data.thumbnailBase64.size() <= 160000));
+    }
+
+    function isValidOutfitCollection(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 60 &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 200));
+    }
+
+    function isValidOutfit(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 80 &&
+        data.occasion is string && data.occasion.size() <= 60 &&
+        data.vibe is string && data.vibe.size() <= 60 &&
+        isBoundedStringList(data.accessoryIds, 10) &&
+        isBoundedStringList(data.itemNames, 15) &&
+        isBoundedStringList(data.colorPalette, 10) &&
+        data.favorite is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 400)) &&
+        (!('collectionId' in data) || (data.collectionId is string && data.collectionId.size() <= 128)) &&
+        (!('topItemId' in data) || (data.topItemId is string && data.topItemId.size() <= 128)) &&
+        (!('bottomItemId' in data) || (data.bottomItemId is string && data.bottomItemId.size() <= 128)) &&
+        (!('shoesItemId' in data) || (data.shoesItemId is string && data.shoesItemId.size() <= 128)) &&
+        (!('jacketItemId' in data) || (data.jacketItemId is string && data.jacketItemId.size() <= 128)) &&
+        (!('itemColorOverrides' in data) || (data.itemColorOverrides is map && data.itemColorOverrides.size() <= 10)) &&
+        (!('feedbackStatus' in data) || data.feedbackStatus in ['LIKED', 'DISLIKED']) &&
+        (!('previewPath' in data) || (data.previewPath is string && data.previewPath.size() <= 400));
+    }
+
+    function isValidCalendarEntry(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.dateKey is string && data.dateKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') &&
+        data.outfitId is string && data.outfitId.size() >= 1 && data.outfitId.size() <= 128 &&
+        data.outfitName is string && data.outfitName.size() >= 1 && data.outfitName.size() <= 80 &&
+        data.occasion is string && data.occasion.size() <= 60 &&
+        data.vibe is string && data.vibe.size() <= 60 &&
+        data.worn is bool &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 300));
+    }
+
+    function isValidWearHistory(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.outfitId is string && data.outfitId.size() >= 1 && data.outfitId.size() <= 128 &&
+        data.outfitName is string && data.outfitName.size() >= 1 && data.outfitName.size() <= 80 &&
+        data.occasion is string && data.occasion.size() <= 60 &&
+        data.vibe is string && data.vibe.size() <= 60 &&
+        isBoundedStringList(data.itemIds, 15) &&
+        isBoundedStringList(data.itemNames, 15) &&
+        data.wornDateKey is string && data.wornDateKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') &&
+        data.wornAt is timestamp && data.wornAt <= request.time &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 300));
+    }
+
+    function isValidAppNotification(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.category in ['OUTFIT_REC', 'DAILY_REMINDER', 'WARDROBE', 'SECURITY', 'APP_UPDATE', 'PRODUCT'] &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 120 &&
+        data.body is string && data.body.size() >= 1 && data.body.size() <= 400 &&
+        data.read is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time;
+    }
+
+    function isValidOwnerNotification(data) {
+      return data.newUserId is string && data.newUserId.size() >= 1 && data.newUserId.size() <= 128 &&
+        data.username is string && data.username.size() >= 2 && data.username.size() <= 30 &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 60 &&
+        data.authMethod in ['LOCAL', 'GOOGLE', 'EMAIL', 'PHONE'] &&
+        data.recipientOwnerEmail == 'livechad67@gmail.com' &&
+        data.message is string && data.message.size() >= 1 && data.message.size() <= 240 &&
+        data.read is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time;
+    }
+
+    function isValidAiConversation(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 80 &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('occasion' in data) || (data.occasion is string && data.occasion.size() <= 60)) &&
+        (!('vibe' in data) || (data.vibe is string && data.vibe.size() <= 60)) &&
+        (!('lastMessagePreview' in data) || (data.lastMessagePreview is string && data.lastMessagePreview.size() <= 200));
+    }
+
+    function isValidAiMessage(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.role in ['USER', 'ASSISTANT'] &&
+        data.text is string && data.text.size() >= 1 && data.text.size() <= 8000 &&
+        isBoundedStringList(data.recommendedItemNames, 15) &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        (!('stylingReason' in data) || (data.stylingReason is string && data.stylingReason.size() <= 1000));
+    }
+
+    function isValidSavedItem(data) {
+      return data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 &&
+        data.targetType in ['DISCOVERY_POST', 'PRODUCT', 'OUTFIT', 'PREVIEW'] &&
+        data.targetId is string && data.targetId.size() >= 1 && data.targetId.size() <= 128 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 100 &&
+        data.category is string && data.category.size() <= 50 &&
+        data.liked is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        (!('subtitle' in data) || (data.subtitle is string && data.subtitle.size() <= 160)) &&
+        (!('collectionName' in data) || (data.collectionName is string && data.collectionName.size() <= 60));
+    }
+
+    function isValidDiscoveryPost(data) {
+      return data.authorId is string && data.authorId.size() >= 1 && data.authorId.size() <= 128 &&
+        data.authorName is string && data.authorName.size() >= 1 && data.authorName.size() <= 60 &&
+        data.title is string && data.title.size() >= 1 && data.title.size() <= 100 &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 500 &&
+        data.category is string && data.category.size() >= 1 && data.category.size() <= 40 &&
+        data.sourceType in ['EDITORIAL', 'COMMUNITY', 'PARTNER_COLLECTION'] &&
+        data.published is bool &&
+        data.likesCount is int && data.likesCount >= 0 &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        data.updatedAt is timestamp && data.updatedAt <= request.time &&
+        (!('targetAudience' in data) || data.targetAudience in ['HIM', 'HER', 'UNISEX']) &&
+        (!('ageGroup' in data) || data.ageGroup in ['ALL', 'TEEN', 'ADULT']) &&
+        (!('culturalTag' in data) || (data.culturalTag is string && data.culturalTag.size() <= 40)) &&
+        (!('sectionTag' in data) || (data.sectionTag is string && data.sectionTag.size() <= 50)) &&
+        (!('imageResKey' in data) || (data.imageResKey is string && data.imageResKey.size() <= 80)) &&
+        (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 500)) &&
+        (!('tags' in data) || isBoundedStringList(data.tags, 10)) &&
+        (!('colorPalette' in data) || isBoundedStringList(data.colorPalette, 10)) &&
+        (!('outfitBreakdown' in data) || isBoundedStringList(data.outfitBreakdown, 10));
+    }
+
+    function isValidSeller(data) {
+      return data.ownerUserId is string && data.ownerUserId.size() >= 1 && data.ownerUserId.size() <= 128 &&
+        data.brandName is string && data.brandName.size() >= 1 && data.brandName.size() <= 80 &&
+        data.active is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 300)) &&
+        (!('websiteUrl' in data) || (data.websiteUrl is string && data.websiteUrl.size() <= 300)) &&
+        (!('contactEmail' in data) || (data.contactEmail is string && data.contactEmail.size() <= 120));
+    }
+
+    function isValidProduct(data) {
+      return data.sellerOwnerId is string && data.sellerOwnerId.size() >= 1 && data.sellerOwnerId.size() <= 128 &&
+        data.sellerId is string && data.sellerId.size() >= 1 && data.sellerId.size() <= 128 &&
+        data.sellerName is string && data.sellerName.size() >= 1 && data.sellerName.size() <= 80 &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 100 &&
+        data.category is string && data.category.size() >= 1 && data.category.size() <= 40 &&
+        data.color is string && data.color.size() >= 1 && data.color.size() <= 40 &&
+        data.style is string && data.style.size() >= 1 && data.style.size() <= 40 &&
+        data.price is number && data.price >= 0 &&
+        data.currency is string && data.currency.size() >= 1 && data.currency.size() <= 8 &&
+        isBoundedStringList(data.sizes, 12) &&
+        data.availabilityStatus in ['IN_STOCK', 'LIMITED', 'OUT_OF_STOCK', 'UNCONFIRMED'] &&
+        data.active is bool &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        (!('storeId' in data) || (data.storeId is string && data.storeId.size() <= 128)) &&
+        (!('occasion' in data) || (data.occasion is string && data.occasion.size() <= 60)) &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 400)) &&
+        (!('productUrl' in data) || (data.productUrl is string && data.productUrl.size() <= 400)) &&
+        (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() <= 500)) &&
+        (!('imageResKey' in data) || (data.imageResKey is string && data.imageResKey.size() <= 80));
+    }
+
+    function isValidReport(data) {
+      return data.reporterId is string && data.reporterId.size() >= 1 && data.reporterId.size() <= 128 &&
+        data.targetType is string && data.targetType.size() >= 1 && data.targetType.size() <= 40 &&
+        data.targetId is string && data.targetId.size() >= 1 && data.targetId.size() <= 128 &&
+        data.reason is string && data.reason.size() >= 1 && data.reason.size() <= 120 &&
+        data.status == 'SUBMITTED' &&
+        data.createdAt is timestamp && data.createdAt <= request.time &&
+        (!('details' in data) || (data.details is string && data.details.size() <= 500));
+    }
+
+    // --- UNIQUE USERNAMES REGISTRY (NO PII, NO LISTING) ---
+
+    function isValidUsernameDocId(id) {
+      return id is string && id.size() >= 3 && id.size() <= 24 && id.matches('^[a-z0-9][a-z0-9_.]{1,22}[a-z0-9]$');
+    }
+
+    match /usernames/{username} {
+      allow get: if isValidUsernameDocId(username);
+      allow list: if false;
+      allow create: if isSignedIn() &&
+        isValidUsernameDocId(username) &&
+        incoming().userId == request.auth.uid &&
+        incoming().keys().hasAll(['userId', 'createdAt']) &&
+        incoming().keys().hasOnly(['userId', 'createdAt']) &&
+        incoming().createdAt is timestamp &&
+        incoming().createdAt <= request.time;
+      allow update: if false;
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid && isValidUsernameDocId(username);
+    }
+
+    // --- OWNER-ONLY REGISTRATION NOTIFICATIONS ---
+
+    match /ownerNotifications/{notifId} {
+      allow get, list: if isClastadOwner();
+      allow create: if isSignedIn() &&
+        isValidId(notifId) &&
+        incoming().newUserId == request.auth.uid &&
+        incoming().keys().hasAll(['newUserId', 'username', 'displayName', 'authMethod', 'recipientOwnerEmail', 'message', 'read', 'createdAt']) &&
+        incoming().keys().hasOnly(['newUserId', 'username', 'displayName', 'authMethod', 'recipientOwnerEmail', 'message', 'read', 'createdAt']) &&
+        isValidOwnerNotification(incoming());
+      allow update: if isClastadOwner() &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['read']) &&
+        incoming().read is bool;
+      allow delete: if isClastadOwner();
+    }
+
+    // --- USER PROFILE & PREFERENCES (OWNER ONLY) ---
+
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+        isValidId(userId) &&
+        incoming().userId == userId &&
+        incoming().keys().hasAll(['userId', 'displayName', 'username', 'preferredStyles', 'preferredColors', 'preferredCategories', 'preferredCurrency', 'themeMode', 'privateProfile', 'minorAccount', 'notificationsEnabled', 'locationAccessPreference', 'createdAt', 'updatedAt']) &&
+        incoming().keys().hasOnly([
+          'userId', 'displayName', 'username', 'email', 'phone', 'avatarUrl', 'profilePhotoPath', 'profilePhotoPrivate',
+          'avatarStyle', 'avatarConfig', 'hasPersonalPhoto', 'guideCompleted',
+          'preferredStyles', 'personalStyleTags', 'preferredColors', 'frequentColors', 'neutralCombos', 'experimentColors', 'avoidColors',
+          'preferredCategories', 'preferredSilhouettes', 'enjoyedCategories', 'rarelyWornCategories',
+          'preferredWeatherStyles', 'preferredOccasions', 'preferredFootwear', 'preferredAccessories', 'lifestyleTags',
+          'budgetPreference', 'inspirationFocus', 'preferredCurrency', 'preferredRegion', 'locationLabel',
+          'themeMode', 'language', 'reducedMotion', 'largeReadableText',
+          'privateProfile', 'minorAccount', 'notificationsEnabled',
+          'notifOutfitRecs', 'notifDailyReminders', 'notifWardrobeReminders', 'notifSecurityAlerts', 'notifAppUpdates', 'notifProductUpdates',
+          'locationAccessPreference', 'gender', 'age', 'height', 'bodySize', 'createdAt', 'updatedAt'
+        ]) &&
+        isValidUserProfile(incoming());
+      allow update: if isOwner(userId) &&
+        isValidId(userId) &&
+        isValidUserProfile(incoming()) &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'displayName', 'username', 'email', 'phone', 'avatarUrl', 'profilePhotoPath', 'profilePhotoPrivate',
+          'avatarStyle', 'avatarConfig', 'hasPersonalPhoto', 'guideCompleted',
+          'preferredStyles', 'personalStyleTags', 'preferredColors', 'frequentColors', 'neutralCombos', 'experimentColors', 'avoidColors',
+          'preferredCategories', 'preferredSilhouettes', 'enjoyedCategories', 'rarelyWornCategories',
+          'preferredWeatherStyles', 'preferredOccasions', 'preferredFootwear', 'preferredAccessories', 'lifestyleTags',
+          'budgetPreference', 'inspirationFocus', 'preferredCurrency', 'preferredRegion', 'locationLabel',
+          'themeMode', 'language', 'reducedMotion', 'largeReadableText',
+          'privateProfile', 'minorAccount', 'notificationsEnabled',
+          'notifOutfitRecs', 'notifDailyReminders', 'notifWardrobeReminders', 'notifSecurityAlerts', 'notifAppUpdates', 'notifProductUpdates',
+          'locationAccessPreference', 'gender', 'age', 'height', 'bodySize', 'updatedAt'
+        ]);
+      allow delete: if isOwner(userId) && isValidId(userId);
+
+      // Legal Acceptances
+      match /legalAcceptances/{acceptanceId} {
+        allow get: if isOwner(userId) && isValidId(acceptanceId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(acceptanceId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'privacyPolicyVersion', 'termsVersion', 'communityGuidelinesVersion', 'cameraConsent', 'photoConsent', 'locationConsent', 'notificationsConsent', 'acceptedAt']) &&
+          incoming().keys().hasOnly(['userId', 'privacyPolicyVersion', 'termsVersion', 'communityGuidelinesVersion', 'cameraConsent', 'photoConsent', 'locationConsent', 'notificationsConsent', 'acceptedAt']) &&
+          isValidLegalAcceptance(incoming());
+        allow update: if false;
+        allow delete: if isOwner(userId) && isValidId(acceptanceId);
+      }
+
+      // Wardrobes
+      match /wardrobes/{wardrobeId} {
+        allow get: if isOwner(userId) && isValidId(wardrobeId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(wardrobeId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'name', 'createdAt', 'updatedAt']) &&
+          incoming().keys().hasOnly(['userId', 'name', 'description', 'createdAt', 'updatedAt']) &&
+          isValidWardrobe(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(wardrobeId) &&
+          isValidWardrobe(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['name', 'description', 'updatedAt']);
+        allow delete: if isOwner(userId) && isValidId(wardrobeId);
+      }
+
+      // Wardrobe Items
+      match /wardrobeItems/{itemId} {
+        allow get: if isOwner(userId) && isValidId(itemId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(itemId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'wardrobeId', 'name', 'category', 'color', 'favorite', 'privateItem', 'collectionTags', 'createdAt', 'updatedAt']) &&
+          incoming().keys().hasOnly(['userId', 'wardrobeId', 'name', 'category', 'subType', 'color', 'pattern', 'material', 'texture', 'finish', 'style', 'garmentType', 'brand', 'notes', 'imagePath', 'thumbnailBase64', 'favorite', 'privateItem', 'collectionTags', 'createdAt', 'updatedAt']) &&
+          isValidWardrobeItem(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(itemId) &&
+          isValidWardrobeItem(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['wardrobeId', 'name', 'category', 'subType', 'color', 'pattern', 'material', 'texture', 'finish', 'style', 'garmentType', 'brand', 'notes', 'imagePath', 'thumbnailBase64', 'favorite', 'privateItem', 'collectionTags', 'updatedAt']);
+        allow delete: if isOwner(userId) && isValidId(itemId);
+      }
+
+      // Outfit Collections
+      match /outfitCollections/{collectionId} {
+        allow get: if isOwner(userId) && isValidId(collectionId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(collectionId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'name', 'createdAt', 'updatedAt']) &&
+          incoming().keys().hasOnly(['userId', 'name', 'description', 'createdAt', 'updatedAt']) &&
+          isValidOutfitCollection(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(collectionId) &&
+          isValidOutfitCollection(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['name', 'description', 'updatedAt']);
+        allow delete: if isOwner(userId) && isValidId(collectionId);
+      }
+
+      // Outfits
+      match /outfits/{outfitId} {
+        allow get: if isOwner(userId) && isValidId(outfitId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(outfitId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'name', 'occasion', 'vibe', 'accessoryIds', 'itemNames', 'colorPalette', 'favorite', 'createdAt', 'updatedAt']) &&
+          incoming().keys().hasOnly(['userId', 'name', 'occasion', 'vibe', 'notes', 'collectionId', 'topItemId', 'bottomItemId', 'shoesItemId', 'jacketItemId', 'accessoryIds', 'itemNames', 'colorPalette', 'itemColorOverrides', 'feedbackStatus', 'previewPath', 'favorite', 'createdAt', 'updatedAt']) &&
+          isValidOutfit(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(outfitId) &&
+          isValidOutfit(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['name', 'occasion', 'vibe', 'notes', 'collectionId', 'topItemId', 'bottomItemId', 'shoesItemId', 'jacketItemId', 'accessoryIds', 'itemNames', 'colorPalette', 'itemColorOverrides', 'feedbackStatus', 'previewPath', 'favorite', 'updatedAt']);
+        allow delete: if isOwner(userId) && isValidId(outfitId);
+      }
+
+      // Outfit Calendar Entries
+      match /calendarEntries/{entryId} {
+        allow get: if isOwner(userId) && isValidId(entryId);
+        allow list: if isOwner(userId);
+        allow create, update: if isOwner(userId) &&
+          isValidId(entryId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'dateKey', 'outfitId', 'outfitName', 'occasion', 'vibe', 'worn', 'updatedAt']) &&
+          incoming().keys().hasOnly(['userId', 'dateKey', 'outfitId', 'outfitName', 'occasion', 'vibe', 'notes', 'worn', 'updatedAt']) &&
+          isValidCalendarEntry(incoming());
+        allow delete: if isOwner(userId) && isValidId(entryId);
+      }
+
+      // Outfit Wear History
+      match /outfitHistory/{historyId} {
+        allow get: if isOwner(userId) && isValidId(historyId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(historyId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'outfitId', 'outfitName', 'occasion', 'vibe', 'itemIds', 'itemNames', 'wornDateKey', 'wornAt']) &&
+          incoming().keys().hasOnly(['userId', 'outfitId', 'outfitName', 'occasion', 'vibe', 'itemIds', 'itemNames', 'wornDateKey', 'notes', 'wornAt']) &&
+          isValidWearHistory(incoming());
+        allow update: if false;
+        allow delete: if isOwner(userId) && isValidId(historyId);
+      }
+
+      // User Notifications Inbox
+      match /notifications/{notifId} {
+        allow get: if isOwner(userId) && isValidId(notifId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(notifId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'category', 'title', 'body', 'read', 'createdAt']) &&
+          incoming().keys().hasOnly(['userId', 'category', 'title', 'body', 'read', 'createdAt']) &&
+          isValidAppNotification(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(notifId) &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['read']) &&
+          incoming().read is bool;
+        allow delete: if isOwner(userId) && isValidId(notifId);
+      }
+
+      // AI Conversations & Messages
+      match /aiConversations/{conversationId} {
+        allow get: if isOwner(userId) && isValidId(conversationId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(conversationId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'title', 'createdAt', 'updatedAt']) &&
+          incoming().keys().hasOnly(['userId', 'title', 'occasion', 'vibe', 'lastMessagePreview', 'createdAt', 'updatedAt']) &&
+          isValidAiConversation(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(conversationId) &&
+          isValidAiConversation(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['title', 'occasion', 'vibe', 'lastMessagePreview', 'updatedAt']);
+        allow delete: if isOwner(userId) && isValidId(conversationId);
+
+        match /messages/{messageId} {
+          allow get: if isOwner(userId) && isValidId(messageId);
+          allow list: if isOwner(userId);
+          allow create: if isOwner(userId) &&
+            isValidId(messageId) &&
+            incoming().userId == userId &&
+            incoming().keys().hasAll(['userId', 'role', 'text', 'recommendedItemNames', 'createdAt']) &&
+            incoming().keys().hasOnly(['userId', 'role', 'text', 'recommendedItemNames', 'stylingReason', 'createdAt']) &&
+            isValidAiMessage(incoming());
+          allow update: if false;
+          allow delete: if isOwner(userId) && isValidId(messageId);
+        }
+      }
+
+      // Saved Items
+      match /savedItems/{savedId} {
+        allow get: if isOwner(userId) && isValidId(savedId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          isValidId(savedId) &&
+          incoming().userId == userId &&
+          incoming().keys().hasAll(['userId', 'targetType', 'targetId', 'title', 'category', 'liked', 'createdAt']) &&
+          incoming().keys().hasOnly(['userId', 'targetType', 'targetId', 'title', 'subtitle', 'category', 'collectionName', 'liked', 'createdAt']) &&
+          isValidSavedItem(incoming());
+        allow update: if isOwner(userId) &&
+          isValidId(savedId) &&
+          isValidSavedItem(incoming()) &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['collectionName', 'liked']);
+        allow delete: if isOwner(userId) && isValidId(savedId);
+      }
+    }
+
+    // --- TOP-LEVEL USER PREFERENCES (OWNER ONLY) ---
+
+    match /userPreferences/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow list: if isSignedIn() && existing().userId == request.auth.uid;
+      allow create: if isOwner(userId) &&
+        isValidId(userId) &&
+        incoming().userId == userId &&
+        incoming().keys().hasAll(['userId', 'preferredStyles', 'preferredColors', 'preferredCategories', 'preferredCurrency', 'themeMode', 'privateProfile', 'minorAccount', 'notificationsEnabled', 'locationAccessPreference', 'createdAt', 'updatedAt']) &&
+        incoming().keys().hasOnly(['userId', 'preferredStyles', 'preferredColors', 'avoidColors', 'preferredCategories', 'preferredWeatherStyles', 'preferredOccasions', 'preferredFootwear', 'preferredAccessories', 'budgetPreference', 'inspirationFocus', 'preferredCurrency', 'preferredRegion', 'locationLabel', 'themeMode', 'language', 'reducedMotion', 'largeReadableText', 'privateProfile', 'minorAccount', 'notificationsEnabled', 'locationAccessPreference', 'createdAt', 'updatedAt']) &&
+        isValidUserPreference(incoming());
+      allow update: if isOwner(userId) &&
+        isValidId(userId) &&
+        isValidUserPreference(incoming()) &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['preferredStyles', 'preferredColors', 'avoidColors', 'preferredCategories', 'preferredWeatherStyles', 'preferredOccasions', 'preferredFootwear', 'preferredAccessories', 'budgetPreference', 'inspirationFocus', 'preferredCurrency', 'preferredRegion', 'locationLabel', 'themeMode', 'language', 'reducedMotion', 'largeReadableText', 'privateProfile', 'minorAccount', 'notificationsEnabled', 'locationAccessPreference', 'updatedAt']);
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+
+    // --- SHARED FASHION DISCOVERY & PARTICIPATING STYLE RADAR CATALOGUE ---
+
+    match /discoveryPosts/{postId} {
+      allow get: if isSignedIn() && isValidId(postId) && (existing().published == true || existing().authorId == request.auth.uid);
+      allow list: if isSignedIn() && existing().published == true;
+      allow create: if isSignedIn() &&
+        isValidId(postId) &&
+        incoming().authorId == request.auth.uid &&
+        incoming().keys().hasAll(['authorId', 'authorName', 'title', 'description', 'category', 'sourceType', 'published', 'likesCount', 'createdAt', 'updatedAt']) &&
+        incoming().keys().hasOnly(['authorId', 'authorName', 'title', 'description', 'category', 'targetAudience', 'ageGroup', 'culturalTag', 'sectionTag', 'sourceType', 'imageResKey', 'imageUrl', 'tags', 'colorPalette', 'outfitBreakdown', 'published', 'likesCount', 'createdAt', 'updatedAt']) &&
+        isValidDiscoveryPost(incoming());
+      allow update: if isSignedIn() &&
+        isValidId(postId) &&
+        isValidDiscoveryPost(incoming()) &&
+        existing().authorId == request.auth.uid &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'category', 'targetAudience', 'ageGroup', 'culturalTag', 'sectionTag', 'tags', 'colorPalette', 'outfitBreakdown', 'published', 'updatedAt']);
+      allow delete: if isSignedIn() && isValidId(postId) && existing().authorId == request.auth.uid;
+    }
+
+    match /sellers/{sellerId} {
+      allow get: if isSignedIn() && isValidId(sellerId) && (existing().active == true || existing().ownerUserId == request.auth.uid);
+      allow list: if isSignedIn() && existing().active == true;
+      allow create: if isSignedIn() &&
+        isValidId(sellerId) &&
+        incoming().ownerUserId == request.auth.uid &&
+        incoming().keys().hasAll(['ownerUserId', 'brandName', 'active', 'createdAt']) &&
+        incoming().keys().hasOnly(['ownerUserId', 'brandName', 'description', 'websiteUrl', 'contactEmail', 'active', 'createdAt']) &&
+        isValidSeller(incoming());
+      allow update: if isSignedIn() &&
+        isValidId(sellerId) &&
+        isValidSeller(incoming()) &&
+        existing().ownerUserId == request.auth.uid &&
+        incoming().ownerUserId == existing().ownerUserId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['brandName', 'description', 'websiteUrl', 'contactEmail', 'active']);
+      allow delete: if isSignedIn() && isValidId(sellerId) && existing().ownerUserId == request.auth.uid;
+    }
+
+    match /products/{productId} {
+      allow get: if isSignedIn() && isValidId(productId) && (existing().active == true || existing().sellerOwnerId == request.auth.uid);
+      allow list: if isSignedIn() && existing().active == true;
+      allow create: if isSignedIn() &&
+        isValidId(productId) &&
+        incoming().sellerOwnerId == request.auth.uid &&
+        incoming().keys().hasAll(['sellerOwnerId', 'sellerId', 'sellerName', 'name', 'category', 'color', 'style', 'price', 'currency', 'sizes', 'availabilityStatus', 'active', 'createdAt']) &&
+        incoming().keys().hasOnly(['sellerOwnerId', 'sellerId', 'sellerName', 'storeId', 'name', 'category', 'color', 'style', 'occasion', 'price', 'currency', 'sizes', 'description', 'availabilityStatus', 'productUrl', 'imageUrl', 'imageResKey', 'active', 'createdAt']) &&
+        isValidProduct(incoming());
+      allow update: if isSignedIn() &&
+        isValidId(productId) &&
+        isValidProduct(incoming()) &&
+        existing().sellerOwnerId == request.auth.uid &&
+        incoming().sellerOwnerId == existing().sellerOwnerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'category', 'color', 'style', 'occasion', 'price', 'currency', 'sizes', 'description', 'availabilityStatus', 'productUrl', 'imageUrl', 'active']);
+      allow delete: if isSignedIn() && isValidId(productId) && existing().sellerOwnerId == request.auth.uid;
+    }
+
+    // --- CONTENT SAFETY & COPYRIGHT REPORTS ---
+
+    match /reports/{reportId} {
+      allow get: if isSignedIn() && isValidId(reportId) && existing().reporterId == request.auth.uid;
+      allow list: if isSignedIn() && existing().reporterId == request.auth.uid;
+      allow create: if isSignedIn() &&
+        isValidId(reportId) &&
+        incoming().reporterId == request.auth.uid &&
+        incoming().keys().hasAll(['reporterId', 'targetType', 'targetId', 'reason', 'status', 'createdAt']) &&
+        incoming().keys().hasOnly(['reporterId', 'targetType', 'targetId', 'reason', 'details', 'status', 'createdAt']) &&
+        isValidReport(incoming());
+      allow update, delete: if false;
+    }
+  }
+}
